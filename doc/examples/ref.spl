@@ -1,0 +1,24 @@
+(*
+let a = ref 9 in
+	let b = ref 7 in
+		let c = ref 12 in
+			(b := !c + !b);
+            let d = ref 10 in
+                d
+            end
+		end
+	end
+end
+*)
+
+let a = ref 9 in
+	let b = ref 7 in
+		let c = ref 12 in
+			(b := !c + !b);
+            fst
+		end
+		let d = ref 0 in
+		    (d,b)
+		end
+	end
+end
