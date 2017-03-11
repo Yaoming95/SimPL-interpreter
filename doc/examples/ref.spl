@@ -1,0 +1,8 @@
+let a = ref 1 in
+	let b = ref 2 in
+		let c = ref 3 in
+			(b := !c + !b);
+			!b
+		end
+	end
+end
