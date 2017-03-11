@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_simpl" default="compile.module.simpl">
+  <dirname property="module.simpl.basedir" file="${ant.file.module_simpl}"/>
+  
+  <property name="module.jdk.home.simpl" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.simpl" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.simpl" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.simpl" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="simpl.output.dir" value="${module.simpl.basedir}/bin"/>
+  <property name="simpl.testoutput.dir" value="${module.simpl.basedir}/bin"/>
+  
+  <path id="simpl.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="simpl.module.production.classpath">
+    <path refid="${module.jdk.classpath.simpl}"/>
+    <pathelement location="${basedir}/lib/java-cup-11a-runtime.jar"/>
+  </path>
+  
+  <path id="simpl.runtime.production.module.classpath">
+    <pathelement location="${simpl.output.dir}"/>
+    <pathelement location="${basedir}/lib/java-cup-11a-runtime.jar"/>
+  </path>
+  
+  <path id="simpl.module.classpath">
+    <pathelement location="${simpl.output.dir}"/>
+    <path refid="${module.jdk.classpath.simpl}"/>
+    <pathelement location="${basedir}/lib/java-cup-11a-runtime.jar"/>
+  </path>
+  
+  <path id="simpl.runtime.module.classpath">
+    <pathelement location="${simpl.output.dir}"/>
+    <pathelement location="${basedir}/lib/java-cup-11a-runtime.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.simpl">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.simpl">
+    <patternset refid="excluded.from.module.simpl"/>
+  </patternset>
+  
+  <path id="simpl.module.sourcepath">
+    <dirset dir="${module.simpl.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.simpl" depends="compile.module.simpl.production,compile.module.simpl.tests" description="Compile module SimPL"/>
+  
+  <target name="compile.module.simpl.production" depends="register.custom.compilers" description="Compile module SimPL; production classes">
+    <mkdir dir="${simpl.output.dir}"/>
+    <javac2 destdir="${simpl.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.simpl}/javac">
+      <compilerarg line="${compiler.args.simpl}"/>
+      <bootclasspath refid="simpl.module.bootclasspath"/>
+      <classpath refid="simpl.module.production.classpath"/>
+      <src refid="simpl.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.simpl"/>
+    </javac2>
+    
+    <copy todir="${simpl.output.dir}">
+      <fileset dir="${module.simpl.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.simpl.tests" depends="register.custom.compilers,compile.module.simpl.production" description="compile module SimPL; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.simpl" description="cleanup module">
+    <delete dir="${simpl.output.dir}"/>
+    <delete dir="${simpl.testoutput.dir}"/>
+  </target>
+</project>
